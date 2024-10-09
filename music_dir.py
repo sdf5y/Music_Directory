@@ -6,23 +6,16 @@ import re
 from mutagen import File
 from mutagen.mp3 import HeaderNotFoundError
 from mutagen.wave import InvalidChunk
-from mutagen.flac import FLACNoHeaderError  
+from mutagen.flac import error
 
 # %%
 dir_path = 'D:\\Music'
 
-acceptable_file_types = ('.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.aiff', '.m4a')
+acceptable_file_types = ('.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.aiff', '.m4a', '.MPEG')
 
 # %%
 file_data = []
-
-for root, dirs, files in os.walk(dir_path):
-    for file in files: 
-        if file.endswith(acceptable_file_types):
-            file_data.append(root + "\\" + file)
-
-# %%
-file_data = []
+problem_files = [] 
 
 for root, dirs, files in os.walk(dir_path):
     for file in files:
@@ -46,19 +39,43 @@ for root, dirs, files in os.walk(dir_path):
                     }
 
                     file_data.append(file_info)
+                #else:
+                   
+                   # problem_files.append({"file_name": file, "root": root})
 
-            except HeaderNotFoundError:
-                continue
+            except (HeaderNotFoundError, InvalidChunk, error) as e:
+                
+                problem_files.append({"file_name": file, "root": root, "error": str(e)})
+            
+            except OSError as os_error:
+                
+                problem_files.append({"file_name": file, "root": root, "error": f"OSError: {str(os_error)}"})
 
-            except InvalidChunk:
-                continue
+            except Exception as e:
+                
+                problem_files.append({"file_name": file, "root": root, "error": str(e)})
 
-            except FLACNoHeaderError:
-                continue
+
+# %%
+for problem in problem_files:
+    print(f"Problem file: {problem['file_name']} in {problem['root']}")
 
 # %%
 for file_info in file_data:
     print(file_info)
+
+# %%
+import json
+
+def save_to_json(filename, data_list):
+    with open(filename, mode='w', encoding='utf-8') as file:
+        json.dump(data_list, file, ensure_ascii=False, indent=4)
+
+save_to_json("working_files1.json", file_data)
+save_to_json("problem_files1.json", problem_files)
+
+# %%
+print(len(file_data), len(problem_files))
 
 # %%
 def clean_sort_key(text):
@@ -96,9 +113,9 @@ def search_by_keyword(file_data, keyword, key="title"):
     return results
 
 # %%
-search_results = search_by_keyword(file_data, keyword = [ "cumberland gap"], key="title")
+search_results = search_by_keyword(file_data, keyword = ['lazy'], key="title")
 
-print(f"Total Search Results: {len(search_results)}")
+print(f"\033[1m  Total Search Results: {len(search_results)} \033[0m")
 
 for result in search_results:
     title = result.get("title", "Unknown Title")  
