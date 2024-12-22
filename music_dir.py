@@ -1,3 +1,12 @@
+# %% [markdown]
+# **Name:**   music_dir.ipynb
+# **Purpose:**  To search for keywords within audio files based on artists, titles, and albums.  
+# **Author:**   Sean Franco
+# **Date Created:**     2024_10_08 
+# **Inputs:**   working_files1.json
+# **Outputs:**  working_files1.json, problem_files1.json  
+# **Notes:**    
+
 # %%
 import numpy as np
 import pandas as pd
@@ -57,14 +66,8 @@ for root, dirs, files in os.walk(dir_path):
 
 
 # %%
-for problem in problem_files:
-    print(f"Problem file: {problem['file_name']} in {problem['root']}")
+#save as JSONs
 
-# %%
-for file_info in file_data:
-    print(file_info)
-
-# %%
 import json
 
 def save_to_json(filename, data_list):
@@ -75,9 +78,12 @@ save_to_json("working_files1.json", file_data)
 save_to_json("problem_files1.json", problem_files)
 
 # %%
+#Check lengths
 print(len(file_data), len(problem_files))
 
 # %%
+#functions
+
 def clean_sort_key(text):
     if text is None:
         return ""
@@ -91,15 +97,10 @@ def sort_by(file_data, key="title"):
     elif key == "artist":
         file_data.sort(key=lambda x: clean_sort_key(x.get("artist", "")) if isinstance(x, dict) else "")
 
-# %%
-print(len(file_data))
-sort_by(file_data, key="title")
-
-# %%
 def clean_string(text):
     if text is None:
         return ""
-    return re.sub(r'\W+', ' ', str(text)).strip().lower()
+    return re.sub(r'\W+\d+', ' ', str(text)).strip().lower()
 
 def search_by_keyword(file_data, keyword, key="title"):
     results = []
@@ -113,7 +114,16 @@ def search_by_keyword(file_data, keyword, key="title"):
     return results
 
 # %%
-search_results = search_by_keyword(file_data, keyword = ['lazy'], key="title")
+#import working JSON
+import json
+
+json_file_path = 'C:\\Users\working_files1.json'
+
+with open(json_file_path, 'r', encoding='utf-8') as file: 
+    file_data = json.load(file)
+
+# %%
+search_results = search_by_keyword(file_data, keyword = [''], key="artist")
 
 print(f"\033[1m  Total Search Results: {len(search_results)} \033[0m")
 
