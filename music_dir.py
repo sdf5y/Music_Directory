@@ -17,6 +17,9 @@ from mutagen.mp3 import HeaderNotFoundError
 from mutagen.wave import InvalidChunk
 from mutagen.flac import error
 
+# %% [markdown]
+# Set path to identify files and JSON.
+
 # %%
 dir_path = 'D:\\Music'
 
@@ -80,6 +83,9 @@ save_to_json("problem_files1.json", problem_files)
 # %%
 #Check lengths
 print(len(file_data), len(problem_files))
+
+# %% [markdown]
+# Open and Search terms withing the JSON.
 
 # %%
 #functions
