@@ -1,11 +1,11 @@
 # %% [markdown]
-# **Name:**   music_dir.ipynb
-# **Purpose:**  To search for keywords within audio files based on artists, titles, and albums.  
-# **Author:**   Sean Franco
-# **Date Created:**     2024_10_08 
-# **Inputs:**   working_files1.json
-# **Outputs:**  working_files1.json, problem_files1.json  
-# **Notes:**    
+# **Name:**   music_dir.ipynb   
+# **Purpose:**  To search for keywords within audio files based on artists, titles, and albums.     
+# **Author:**   Sean Franco   
+# **Date Created:**     2024_10_08    
+# **Inputs:**   working_files1.json   
+# **Outputs:**  working_files1.json, problem_files1.json    
+# **Notes:**       
 
 # %%
 import numpy as np
@@ -119,24 +119,30 @@ def search_by_keyword(file_data, keyword, key="title"):
                 results.append(file_info)
     return results
 
+def print_results(search_results):
+    print(f"\033[1m  Total Search Results: {len(search_results)} \033[0m")
+    header = f"\033[1m{'Title':<60} {'Artist':<30} {'Folder':<60}\033[0m"
+    print(header)
+    print("-" * len(header))  
+    
+    for result in search_results:
+        title = result.get("title", "Unknown Title")
+        artist = result.get("artist", "Unknown Artist")
+        root = result.get("root", "Unknown Folder")
+        print(f"{title:<60} {artist:<30} {root:<60}")
+
 # %%
 #import working JSON
 import json
 
-json_file_path = 'C:\\Users\working_files1.json'
+json_file_path = 'C:\\Users\\___\\Documents\\Python\\music_dir\\working_files1.json'
 
 with open(json_file_path, 'r', encoding='utf-8') as file: 
     file_data = json.load(file)
 
 # %%
-search_results = search_by_keyword(file_data, keyword = [''], key="artist")
+results_df = search_by_keyword(file_data, keyword = ['marcus martin'], key="artist")
 
-print(f"\033[1m  Total Search Results: {len(search_results)} \033[0m")
-
-for result in search_results:
-    title = result.get("title", "Unknown Title")  
-    artist = result.get("artist", "Unknown Artist") 
-    root = result.get('root', 'Unknown folder')
-    print(f"{title:<60} BY: {artist}  FOLDER: {root:>60}")
+print_results(results_df)
 
 
