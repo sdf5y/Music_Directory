@@ -17,11 +17,8 @@ from mutagen.mp3 import HeaderNotFoundError
 from mutagen.wave import InvalidChunk
 from mutagen.flac import error
 
-# %% [markdown]
-# Set path to identify files and JSON.
-
 # %%
-dir_path = 'D:\\Music'
+dir_path = ''
 
 acceptable_file_types = ('.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.aiff', '.m4a', '.MPEG')
 
@@ -135,13 +132,13 @@ def print_results(search_results):
 #import working JSON
 import json
 
-json_file_path = 'C:\\Users\\___\\Documents\\Python\\music_dir\\working_files1.json'
+json_file_path = '.json'
 
 with open(json_file_path, 'r', encoding='utf-8') as file: 
     file_data = json.load(file)
 
 # %%
-results_df = search_by_keyword(file_data, keyword = ['marcus martin'], key="artist")
+results_df = search_by_keyword(file_data, keyword = [''], key="artist")
 
 print_results(results_df)
 
