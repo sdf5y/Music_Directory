@@ -188,10 +188,24 @@ def sort_by_column(col, reverse=False):
 
 # Toggle sort order (ascending/descending)
 def toggle_sort(col):
-    global sort_order
+    global sort_order, current_sort_col
+
+    # Reset the previous column heading if different
+    if current_sort_col is not None and current_sort_col != col:
+        column_name = result_table["columns"][current_sort_col]
+        result_table.heading(column_name, text=column_name)
+
+    # Toggle the sort order
     reverse = sort_order[col]
     sort_order[col] = not reverse
+    current_sort_col = col
+
     sort_by_column(col, reverse)
+
+    # Update the heading with arrow
+    column_name = result_table["columns"][col]
+    direction = "⬆" if not reverse else "⬇"
+    result_table.heading(column_name, text=f"{column_name} {direction}")
 
 # GUI setup
 root = tk.Tk()
@@ -231,7 +245,10 @@ load_button.pack(side="right", pady=5)
 
 # Search button
 search_button = tk.Button(root, text="Search", command=search)
-search_button.pack(pady=5)
+search_button.pack(pady = 5, padx=5)
+
+#search via enter
+root.bind('<Return>', lambda event: search())
 
 # Results table with scrollbar
 table_frame = tk.Frame(root)
@@ -272,6 +289,7 @@ def on_cell_click(event):
         copy_selected_cell(event)
 
 # Store the sort order for each column
+current_sort_col = None
 sort_order = {0: False, 1: False, 2: False, 3: False}
 
 root.mainloop()
